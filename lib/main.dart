@@ -22,19 +22,48 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget{
   @override
   Widget build(BuildContext context){
-    return Scaffold(appBar: AppBar(
-  title: const Text('Hello World'),
-  backgroundColor: Colors.orange, // Arka planı turuncu yapar
-  foregroundColor: Colors.white,  // İçindeki yazının rengini beyaz yapar
-),
-    body: Row(
-      children: <Widget>[TestWidget(), TestWidget(), TestWidget()], ));
-  }
+    return Scaffold(
+  appBar: AppBar(title: Text('Hello World!')),
+  body: MyWidget()
+  );
 } 
+}
 
-class TestWidget extends StatelessWidget {
+class MyWidget extends StatefulWidget {
+  const MyWidget({super.key});
+
+  @override
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+  final controller = TextEditingController();
+  String text = "";
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
+  void changeText(text) {
+    if(text == "Hello World!"){
+      controller.clear();
+      text = "";
+    }
+    setState(() {
+    this.text = text;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Text('Hello World!');
+    return Column(children: <Widget>[
+      TextField(
+      controller: this.controller,
+      decoration: InputDecoration(prefixIcon: Icon(Icons.message), labelText: "Type a mesaage:"),
+      onChanged: (text) => this.changeText(text),
+      ), Text(this.text)
+    ]);
   }
 }
