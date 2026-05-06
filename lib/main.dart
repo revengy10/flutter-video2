@@ -1,44 +1,62 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Emirhan App',
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: const Color.fromARGB(255, 93, 0, 255)),
+        primarySwatch: Colors.red,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget{
+class MyHomePage extends StatefulWidget {
+
   @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+String text = "";
+
+void changeText(String text) {
+  this.setState(() {
+  this.text = text;
+  });
+}
+
+
+@override
   Widget build(BuildContext context){
     return Scaffold(
-  appBar: AppBar(title: Text('Hello World!')),
-  body: MyWidget()
-  );
-} 
+    appBar: AppBar(title: Text('Hello World!')),
+    body: Column(children: <Widget>
+    [TextInputWiget(this.changeText), 
+    Text(this.text)]));
+  }
 }
 
-class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
+
+class TextInputWiget extends StatefulWidget {
+
+  final Function(String) callback;
+  TextInputWiget(this.callback);
 
   @override
-  State<MyWidget> createState() => _MyWidgetState();
+  _TextInputWigetState createState() => _TextInputWigetState();
 }
 
-class _MyWidgetState extends State<MyWidget> {
+class _TextInputWigetState extends State<TextInputWiget> {
   final controller = TextEditingController();
-  String text = "";
 
   @override
   void dispose() {
@@ -46,24 +64,23 @@ class _MyWidgetState extends State<MyWidget> {
     controller.dispose();
   }
 
-  void changeText(text) {
-    if(text == "Hello World!"){
-      controller.clear();
-      text = "";
-    }
-    setState(() {
-    this.text = text;
-    });
-  }
+void click() {
+  widget.callback(controller.text);
+  controller.clear();
+}
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      TextField(
+    return TextField(
       controller: this.controller,
-      decoration: InputDecoration(prefixIcon: Icon(Icons.message), labelText: "Type a mesaage:"),
-      onChanged: (text) => this.changeText(text),
-      ), Text(this.text)
-    ]);
+      decoration: InputDecoration(
+        prefixIcon: Icon(Icons.message),
+         labelText: "Type a message:", 
+      suffixIcon: IconButton(
+        icon: Icon(Icons.send), 
+        splashColor: Colors.blue,
+        tooltip: "Post message",
+      onPressed: this.click,
+      )));
   }
 }
