@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'post.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 class PostList extends StatefulWidget {
   final List<Post> listItems;
+  final User user;
 
-  PostList(this.listItems);
+  PostList(this.listItems, this.user);
 
   @override
   State<PostList> createState() => _PostListState();
@@ -28,13 +30,14 @@ class _PostListState extends State<PostList> {
         subtitle: Text(post.author),
         )), 
         Row(children: <Widget>[
-          Container(child: Text(post.likes.toString(),
-           style: TextStyle(fontSize: 20)),
+          Container(child: 
+              Text(post.usersLiked.length.toString(),style: TextStyle(fontSize: 20)),
            padding: EdgeInsets.fromLTRB(0, 0, 10, 0),),
         IconButton(
           icon: Icon(Icons.thumb_up),
-          onPressed: () => this.like(post.likePost),
-          color: post.userLiked ? Colors.green : Colors.black
+          onPressed: () => this.like(() => post.likePost(widget.user)),
+          color: post.usersLiked.contains(widget.user.uid)
+           ? Colors.green : Colors.black
         )
         ],
         )
